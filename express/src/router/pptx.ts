@@ -18,8 +18,9 @@ import {
 } from "../utils/user";
 
 import {
+  updateTemplateList,
   getPPTXContent,
-  getTemplates,
+  getTemplatesList,
   getPPTXTemplate,
   setTitle,
   setTheme,
@@ -40,13 +41,14 @@ app.get("/api/pptx/listtemplate", async (req: Request, res: Response) => {
   res.end();
 });
 
-app.get("/api/pptx/getTemplates", async (req: Request, res: Response) => {
- 
-  try{ // You might want to pass different parameters or none at all, depending on how you store and want to retrieve your templates.
-  const templates = await getTemplates();
-  res.status(200).json(templates);
-  }catch (error) {
-    res.status(500).json({ message: 'Error fetching templates' });
+app.get("/api/pptx/getTemplatesList", async (req: Request, res: Response) => {
+  try {
+    await updateTemplateList(); // Update the template list before retrieving it
+    const templates = await getTemplatesList(); // Then, get the updated list
+    res.status(200).json(templates);
+  } catch (error) {
+    console.error("Error fetching templates:", error);
+    res.status(500).json({ message: "Error fetching templates" });
   }
 });
 

@@ -138,7 +138,7 @@
 					<div @click="typeIndex03 = 3" :class="typeIndex03 == 3 ? 'chooseColor':''">营销策划</div>
 				</div>
 			</div>
-			<MoBanListAPI @select="slides => { chooseSlideByTemplate(slides); mobanVisible = false }" />
+			<TemplateList @select="slides => { chooseSlideByTemplate(slides); mobanVisible = false }" />
 		</Modal>
   </div>
 </template>
@@ -169,7 +169,7 @@ import Popover from '@/components/Popover.vue'
 import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 
 import BanShiList from './BanShiList.vue'
-import MoBanListAPI from './MoBanListAPI.vue'
+import TemplateList from './TemplateList.vue'
 //import MoBanList from './MoBanList.vue'
 
 const mainStore = useMainStore()

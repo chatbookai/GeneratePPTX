@@ -6,7 +6,8 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 import useragent from "useragent";
 import fs from "fs";
-import path from 'path';
+
+import path from "path";
 import { DataDir } from "./const";
 
 dotenv.config();
@@ -32,16 +33,59 @@ export async function getPPTXContent(id: number) {
   return slidesData;
 }
 
-export async function getTemplates() {
-  const filePath = path.join(DataDir + "/ppttemplate/moban1.json");
+export async function getTemplatesList() {
+  const filePath = path.join(DataDir + "/ppttemplate/templateList.json");
   console.log("filePath", filePath);
   try {
-    const data = await fs.promises.readFile(filePath, 'utf8');
-    const templates = JSON.parse(data);
-    return templates;
+    const data = await fs.promises.readFile(filePath, "utf8");
+    const templatesList = JSON.parse(data);
+    return templatesList;
   } catch (error) {
-    console.error('Error reading template file:', error);
-    throw error; 
+    console.error("Error reading template file:", error);
+    throw error;
+  }
+}
+
+export async function updateTemplateList() {
+  const templatesDir = path.join(DataDir, "/ppttemplate/");
+  const templateFiles = await fs.promises.readdir(templatesDir);
+
+  const templateList = [];
+
+  for (const file of templateFiles) {
+    if (file === "templateList.json") continue; // Skip the index file itself
+
+    const filePath = path.join(templatesDir, file);
+    try {
+      const data = await fs.promises.readFile(filePath, "utf8");
+      const templates = JSON.parse(data);
+      if (templates.length > 0) {
+        // Assuming the first page of the template is what we want
+        const firstPage = templates[0]; // Taking the first page
+        templateList.push({
+          id: firstPage.id, // Or some other unique identifier
+          elements: firstPage.elements, // This might be modified depending on how you want to handle thumbnails
+        });
+      }
+    } catch (error) {
+      console.error(`Error processing template file ${file}:`, error);
+      // Optionally, continue to the next file instead of throwing an error
+      // throw error;
+    }
+  }
+
+  // Now, write the aggregated template list back to the templateList.json file
+  const templateListPath = path.join(templatesDir, "templateList.json");
+  try {
+    await fs.promises.writeFile(
+      templateListPath,
+      JSON.stringify(templateList, null, 2),
+      "utf8"
+    );
+    console.log("Updated template list successfully");
+  } catch (error) {
+    console.error("Error writing template list file:", error);
+    throw error; // Or handle the error as appropriate
   }
 }
 

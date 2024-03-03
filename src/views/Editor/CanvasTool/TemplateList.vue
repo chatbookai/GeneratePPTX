@@ -2,13 +2,13 @@
   <div class="layout-pool">
     <div 
       class="layout-item"
-      v-for="(slide,index) in localMobanLayouts" 
+      v-for="(slide,index) in localTemplateList" 
       :key="slide.id"
       @click="selectSlideTemplate(index)"
     >
       <ThumbnailSlide class="thumbnail" :slide="slide" :size="180" />
     </div>
-    <pre>{{ JSON.stringify(localMobanLayouts) }}</pre>
+    <pre>{{ JSON.stringify(localTemplateList) }}</pre>
   </div>
 </template>
 
@@ -17,23 +17,24 @@ import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSlidesStore } from '@/store'
 import type { Slide } from '@/types/slides'
-import { fetchMoban } from '@/api/moban' 
+import { fetchTemplateList } from '@/api/moban' 
 import ThumbnailSlide from '@/views/components/ThumbnailSlide/index.vue'
 
-const localMobanLayouts = ref<Slide[]>([]) // 创建一个本地状态来存储模板
+const localTemplateList = ref<Slide[]>([]) // 创建一个本地状态来存储模板
 
 onMounted(async () => {
-  localMobanLayouts.value = await fetchMoban() // 在组件挂载时获取模板
+  localTemplateList.value = await fetchTemplateList() // 在组件挂载时获取模板
 })
 
 const emit = defineEmits<{
   (event: 'select', payload: Slide[]): void;
 }>()
 
+// 需要修改此段来完成加载指定的模版
 const selectSlideTemplate = (index: number) => {
-  const selectedTemplate = localMobanLayouts.value[index]
+  const selectedTemplate = localTemplateList.value[index]
   if (selectedTemplate) {
-    emit('select', [].concat(localMobanLayouts.value))
+    emit('select', [].concat(localTemplateList.value))
   }
 }
 </script>
