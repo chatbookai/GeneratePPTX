@@ -2,7 +2,7 @@
   <div class="layout-pool">
     <div 
       class="layout-item"
-      v-for="(slide,index) in mobanLayouts" 
+      v-for="(slide,index) in localMobanLayouts" 
       :key="slide.id"
       @click="selectSlideTemplate(index)"
     >
@@ -20,7 +20,6 @@ import type { Slide } from '@/types/slides'
 import { fetchMoban } from '@/api/moban' 
 import ThumbnailSlide from '@/views/components/ThumbnailSlide/index.vue'
 
-const { mobanLayouts } = storeToRefs(useSlidesStore())
 const localMobanLayouts = ref<Slide[]>([]) // 创建一个本地状态来存储模板
 
 onMounted(async () => {
@@ -34,7 +33,7 @@ const emit = defineEmits<{
 const selectSlideTemplate = (index: number) => {
   const selectedTemplate = localMobanLayouts.value[index]
   if (selectedTemplate) {
-    emit('select', [].concat(selectedTemplate))
+    emit('select', [].concat(localMobanLayouts.value))
   }
 }
 </script>

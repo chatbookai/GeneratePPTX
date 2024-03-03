@@ -231,6 +231,7 @@ const typeIndex03 = ref(0)
 
 // 确认选择模板
 const chooseSlideByTemplate = (slides: Slide[]) => {
+  resetSlides(slides)
   slidesStore.setSlides(slides)
 }
 

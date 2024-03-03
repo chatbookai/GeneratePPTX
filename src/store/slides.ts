@@ -221,6 +221,8 @@ export const useSlidesStore = defineStore("slides", {
     },
 
     async setSlides(newSlides: Slide[]) {
+      this.slides = [];
+      this.$patch({ slides: [] }); // 清空视图中的幻灯片
       for (let slideIndex = 0; slideIndex < newSlides.length; slideIndex++) {
         const slide = newSlides[slideIndex];
 
