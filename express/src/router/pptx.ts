@@ -18,6 +18,7 @@ import {
 } from "../utils/user";
 
 import {
+  getTemplatesById,
   updateTemplateList,
   getPPTXContent,
   getTemplatesList,
@@ -51,6 +52,24 @@ app.get("/api/pptx/getTemplatesList", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching templates" });
   }
 });
+
+app.get(
+  "/api/pptx/getTemplateById/:templateId",
+  async (req: Request, res: Response) => {
+    console.log("req.params.templateId", req.params.templateId);
+    try {
+      const data = await getTemplatesById(req.params.templateId);
+      const template = JSON.parse(data);
+      console.log("template", template);
+      res.status(200).json(template);
+    } catch (error) {
+      console.error(`Error fetching template ${req.params.templateId}:`, error);
+      res
+        .status(500)
+        .json({ message: `Error fetching template ${req.params.templateId}` });
+    }
+  }
+);
 
 app.post("/api/pptx/getPPTXContent", async (req: Request, res: Response) => {
   //const { authorization } = req.headers;

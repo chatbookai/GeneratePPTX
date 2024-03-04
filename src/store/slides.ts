@@ -221,6 +221,11 @@ export const useSlidesStore = defineStore("slides", {
     },
 
     async setSlides(newSlides: Slide[]) {
+      if (!Array.isArray(newSlides)) {
+        console.error("Invalid slides data:", newSlides);
+        return; // 如果 newSlides 不是数组，则直接返回
+      }
+      console.log("slides setSlides", newSlides);
       this.slides = [];
       this.$patch({ slides: [] }); // 清空视图中的幻灯片
       for (let slideIndex = 0; slideIndex < newSlides.length; slideIndex++) {
@@ -237,6 +242,10 @@ export const useSlidesStore = defineStore("slides", {
         this.$patch({ slides: [...this.slides], slideIndex });
         await nextTick(); // 确保DOM更新完成
 
+        if (!Array.isArray(slide.elements)) {
+          console.error("Invalid elements data in slide:", slide);
+          continue; // 如果 slide.elements 不是数组，则跳过当前幻灯片
+        }
         // 逐步添加元素
         for (
           let elementIndex = 0;

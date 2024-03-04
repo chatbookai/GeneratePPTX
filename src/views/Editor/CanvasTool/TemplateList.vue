@@ -17,7 +17,7 @@ import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSlidesStore } from '@/store'
 import type { Slide } from '@/types/slides'
-import { fetchTemplateList } from '@/api/moban' 
+import { fetchTemplateList, fetchTemplateById } from '@/api/template' 
 import ThumbnailSlide from '@/views/components/ThumbnailSlide/index.vue'
 
 const localTemplateList = ref<Slide[]>([]) // 创建一个本地状态来存储模板
@@ -30,13 +30,18 @@ const emit = defineEmits<{
   (event: 'select', payload: Slide[]): void;
 }>()
 
-// 需要修改此段来完成加载指定的模版
-const selectSlideTemplate = (index: number) => {
-  const selectedTemplate = localTemplateList.value[index]
-  if (selectedTemplate) {
-    emit('select', [].concat(localTemplateList.value))
+
+const selectSlideTemplate = async (index: number) => {
+  const selectedTemplatePreview = localTemplateList.value[index]; // 这是预览信息
+  if (selectedTemplatePreview) {
+    const fullTemplate = await fetchTemplateById(selectedTemplatePreview.id); // 根据id获取完整模板信息
+    if (fullTemplate) {
+      emit('select', [fullTemplate]); // 发送完整模板信息
+    } else {
+      console.error('Failed to fetch full template details');
+    }
   }
-}
+};
 </script>
 
 

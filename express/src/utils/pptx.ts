@@ -89,6 +89,18 @@ export async function updateTemplateList() {
   }
 }
 
+export async function getTemplatesById(templateId: any) {
+  const filePath = path.join(DataDir + "/ppttemplate/" + templateId + ".json");
+  console.log("filePath", filePath);
+  try {
+    const data = await fs.promises.readFile(filePath, "utf8");
+    return data;
+  } catch (error) {
+    console.error("Error reading template file:", error);
+    throw error;
+  }
+}
+
 export async function setTitle(Data: any) {
   console.log("Data", Data);
   const updateSetting = db.prepare("update pptx set title = ? where id = ?");
